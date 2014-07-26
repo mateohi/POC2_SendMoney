@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">POC2_SendMoney</string>
+    <string name="title_activity_send_money_service">Send money</string>
+    <string name="action_transfer">Transfer</string>
+    <string name="help_transfer">swipe to change amount</string>
+    <string name="action_finish">Finish</string>
+    <string name="to_prompt">to</string>
+    <string name="title_activity_send_money">SendMoneyActivity</string>
+    <string name="unrecognized_error">No contact heard, try again\nTap to dismiss</string>
+
+</resources>

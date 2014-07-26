@@ -1,0 +1,3 @@
+<trigger command="SEND_MONEY">
+    <input prompt="@string/to_prompt"/>
+</trigger>
