@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ic.banking.glass.poc2_sendmoney" >
+    <!--
+    <uses-permission
+        android:name="com.google.android.glass.permission.DEVELOPMENT" />-->
 
     <application
         android:allowBackup="true"

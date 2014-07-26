@@ -1,10 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/action_transfer"
-          android:title="@string/action_transfer"
+          android:title="PLAY_MUSIC"
           android:icon="@drawable/ic_done_50"/>
 
     <item android:id="@+id/action_finish"
-          android:title="@string/action_finish"
+          android:title="PAUSE_MUSIC"
           android:icon="@drawable/ic_stop"/>
 </menu>

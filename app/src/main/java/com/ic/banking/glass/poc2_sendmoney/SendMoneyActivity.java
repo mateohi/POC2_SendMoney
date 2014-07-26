@@ -9,14 +9,18 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
+import com.google.android.glass.view.WindowUtils;
 
 import java.util.List;
 
@@ -24,8 +28,8 @@ public class SendMoneyActivity extends Activity {
 
     private static final String TAG = SendMoneyActivity.class.getSimpleName();
 
-    private static final String CURRENCY_SYMBOL = "U$S";
-    private static final String TRANSACTION_MESSAGE = "Send to %s,\nfor %s";
+    private static final String CURRENCY_SYMBOL = "$U";
+    private static final String TRANSACTION_MESSAGE = "Send to %s,\nfor %s %s";
 
     private static final int MAX_AMOUNT = 10000;
     private static final int MIN_AMOUNT = 0;
@@ -33,6 +37,7 @@ public class SendMoneyActivity extends Activity {
     private SensorManager sensorManager;
     private SensorEventListener sensorEventListener;
     private GestureDetector gestureDetector;
+
     private String receiverName;
     private float currentAngle;
     private Thread angleThread;
@@ -88,12 +93,12 @@ public class SendMoneyActivity extends Activity {
         gestureDetector.setScrollListener(new GestureDetector.ScrollListener() {
             @Override
             public boolean onScroll(float displacement, float delta, float velocity) {
-                TextView tvInfo = (TextView) findViewById(R.id.transfer_amount);
+                TextView tvInfo = (TextView) findViewById(R.id.transfer_info);
 
-                String oldAmount = tvInfo.getText().toString();
+                String oldAmount = getAmountFromText(tvInfo.getText().toString());
                 String newAmount = calculateNewAmountFromSwipe(displacement, oldAmount);
 
-                tvInfo.setText(newAmount);
+                tvInfo.setText(buildTransactionMessage(newAmount));
 
                 return true;
             }
@@ -112,8 +117,11 @@ public class SendMoneyActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.gestureDetector = createGestureDetector(this);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().requestFeature(WindowUtils.FEATURE_VOICE_COMMANDS);
+
+        this.gestureDetector = createGestureDetector(this);
         asignReceiverNameFromVoiceResult();
 
         if (this.receiverName == null) {
@@ -147,17 +155,19 @@ public class SendMoneyActivity extends Activity {
     }
 
     private void handleCurrentAngle() {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView tvInfo = (TextView) findViewById(R.id.transfer_amount);
+        if (activityVisible) {
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tvInfo = (TextView) findViewById(R.id.transfer_info);
 
-                String oldAmount = tvInfo.getText().toString();
-                String newAmount = calculateNewAmountFromSensor(oldAmount);
+                    String oldAmount = getAmountFromText(tvInfo.getText().toString());
+                    String newAmount = calculateNewAmountFromSensor(oldAmount);
 
-                tvInfo.setText(newAmount);
-            }
-        });
+                    tvInfo.setText(buildTransactionMessage(newAmount));
+                }
+            });
+        }
     }
 
     private void createAndRegisterSensors() {
@@ -169,8 +179,7 @@ public class SendMoneyActivity extends Activity {
     }
 
     private void setInitialValues() {
-        this.setTextViewText(R.id.transfer_info, buildTransactionMessage());
-        this.setTextViewText(R.id.transfer_amount, String.valueOf(MIN_AMOUNT));
+        this.setTextViewText(R.id.transfer_info, buildTransactionMessage(String.valueOf(MIN_AMOUNT)));
     }
 
     @Override
@@ -206,6 +215,35 @@ public class SendMoneyActivity extends Activity {
     }
 
     @Override
+    public boolean onCreatePanelMenu(int featureId, Menu menu) {
+        if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS ||
+                featureId == Window.FEATURE_OPTIONS_PANEL) {
+            getMenuInflater().inflate(R.menu.send_money, menu);
+            return true;
+        }
+        return super.onCreatePanelMenu(featureId, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if (featureId == WindowUtils.FEATURE_VOICE_COMMANDS ||
+                featureId == Window.FEATURE_OPTIONS_PANEL) {
+            switch (item.getItemId()) {
+                case R.id.action_finish:
+                    finish();
+                    break;
+                case R.id.action_transfer:
+                    makeTransfer();
+                    break;
+                default:
+                    return true;
+            }
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_finish) {
@@ -213,14 +251,18 @@ public class SendMoneyActivity extends Activity {
             return true;
         }
         if (id == R.id.action_transfer) {
-            Toast.makeText(getApplicationContext(), "Money transfered", Toast.LENGTH_SHORT).show();
+            makeTransfer();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private String buildTransactionMessage() {
-        return String.format(TRANSACTION_MESSAGE, this.receiverName, CURRENCY_SYMBOL);
+    private void makeTransfer() {
+        Toast.makeText(getApplicationContext(), "Money transfered", Toast.LENGTH_SHORT).show();
+    }
+
+    private String buildTransactionMessage(String amount) {
+        return String.format(TRANSACTION_MESSAGE, this.receiverName, CURRENCY_SYMBOL, amount);
     }
 
     private static String calculateNewAmountFromSwipe(float displacement, String amountString) {
@@ -281,6 +323,13 @@ public class SendMoneyActivity extends Activity {
         if (amount > MAX_AMOUNT) {
             return MAX_AMOUNT;
         }
+        return amount;
+    }
+
+    private String getAmountFromText(String amountInfo) {
+        String[] parts = amountInfo.split(CURRENCY_SYMBOL);
+        String amount = parts[1].trim();
+
         return amount;
     }
 
