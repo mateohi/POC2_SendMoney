@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ic.banking.glass.poc2_sendmoney" >
+          package="com.ic.banking.glass.poc2_sendmoney">
     <!--
     <uses-permission
         android:name="com.google.android.glass.permission.DEVELOPMENT" />-->
@@ -8,19 +8,19 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name">
 
         <activity
             android:name=".SendMoneyActivity"
             android:icon="@drawable/ic_glass_logo"
-            android:label="@string/title_activity_send_money" >
+            android:label="@string/title_activity_send_money">
             <intent-filter>
-                <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
+                <action android:name="com.google.android.glass.action.VOICE_TRIGGER"/>
             </intent-filter>
 
             <meta-data
                 android:name="com.google.android.glass.VoiceTrigger"
-                android:resource="@xml/voice_trigger" />
+                android:resource="@xml/voice_trigger"/>
         </activity>
     </application>
 
