@@ -46,9 +46,9 @@
         android:id="@+id/footer_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|left"
+        android:layout_gravity="top|left"
         android:layout_marginBottom="@dimen/card_footer_margin"
         android:layout_marginLeft="@dimen/card_two_column_margin"
         android:layout_marginRight="@dimen/card_margin"
@@ -65,20 +65,11 @@
         <TextView
             android:id="@+id/footer"
             android:text="@string/help_transfer"
+            android:layout_marginTop="@dimen/card_margin"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            />
-
-        <TextView
-            android:id="@+id/timestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/card_margin"
             android:ellipsize="end"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"

@@ -121,7 +121,7 @@ public class SendMoneyActivity extends Activity {
         getWindow().requestFeature(WindowUtils.FEATURE_VOICE_COMMANDS);
 
         this.gestureDetector = createGestureDetector(this);
-        asignReceiverNameFromVoiceResult();
+        assignReceiverNameFromVoiceResult();
 
         if (this.receiverName == null) {
             setContentView(R.layout.error_message);
@@ -188,7 +188,7 @@ public class SendMoneyActivity extends Activity {
         super.onResume();
     }
 
-    private void asignReceiverNameFromVoiceResult() {
+    private void assignReceiverNameFromVoiceResult() {
         try {
             List<String> voiceResults = getIntent().getExtras().getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
             this.receiverName = voiceResults.get(0);
@@ -240,20 +240,6 @@ public class SendMoneyActivity extends Activity {
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_finish) {
-            finish();
-            return true;
-        }
-        if (id == R.id.action_transfer) {
-            makeTransfer();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void makeTransfer() {
@@ -326,7 +312,8 @@ public class SendMoneyActivity extends Activity {
     }
 
     private String getAmountFromText(String amountInfo) {
-        String[] parts = amountInfo.split(CURRENCY_SYMBOL);
+        String regex = CURRENCY_SYMBOL.replace("$", "\\$");
+        String[] parts = amountInfo.split(regex);
         String amount = parts[1].trim();
 
         return amount;
