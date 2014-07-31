@@ -1,6 +1,6 @@
 package com.ic.banking.glass.poc2_sendmoney;
 
-import android.app.Activity
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
