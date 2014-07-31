@@ -1,11 +1,12 @@
 package com.ic.banking.glass.poc2_sendmoney;
 
-import android.app.Activity;
+import android.app.Activity
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.glass.media.Sounds;
 import com.google.android.glass.touchpad.Gesture;
 import com.google.android.glass.touchpad.GestureDetector;
 import com.google.android.glass.view.WindowUtils;
@@ -83,6 +85,7 @@ public class SendMoneyActivity extends Activity {
                         finish();
                     }
                     else {
+                        playSound(Sounds.TAP);
                         openOptionsMenu();
                     }
                 }
@@ -322,5 +325,10 @@ public class SendMoneyActivity extends Activity {
     private void setTextViewText(int textViewId, String text) {
         TextView tv = (TextView) findViewById(textViewId);
         tv.setText(text);
+    }
+    
+    private void playSound(int sound) {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        am.playSoundEffect(sound);
     }
 }
